@@ -1,0 +1,36 @@
+{
+    "name": "nextgen-tech/nmvs-client",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Krzysztof Grabania",
+            "email": "info@nextgen-tech.pl"
+        }, 
+        {
+            "name": "Mateusz Kiedrowski",
+            "email": "info@nextgen-tech.pl"
+        }
+    ],
+    "require": {
+        "php": "^7.3",
+        "guzzlehttp/guzzle": "^6.3|^7.2",
+        "ramsey/uuid": "^3.7|^4.1",
+        "spatie/array-to-xml": "^2.15"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.12.54",
+        "phpunit/phpunit": "^9.4",
+        "spatie/phpunit-snapshot-assertions": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "NGT\\NMVS\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
