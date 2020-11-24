@@ -52,10 +52,7 @@ class HttpConnection implements ConnectionContract
     {
         if ($this->client === null) {
             $this->client = new Client([
-                'curl' => [
-                    CURLOPT_SSLCERTTYPE => $this->certificate->getType(),
-                ],
-                RequestOptions::CERT    => $this->certificate->toCert(),
+                'curl' => $this->certificate->toCurlOptions(),
                 RequestOptions::HEADERS => [
                     'Content-Type' => 'text/xml',
                 ],

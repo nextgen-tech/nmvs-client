@@ -3,16 +3,21 @@ declare(strict_types=1);
 
 namespace NGT\NMVS;
 
-use InvalidArgumentException;
-
 class Certificate
 {
     /**
      * The path of the certificate.
      *
-     * @var  string
+     * @var  string|null
      */
-    private $path;
+    private $certificatePath;
+
+    /**
+     * The path of the key certificate.
+     *
+     * @var  string|null
+     */
+    private $keyPath;
 
     /**
      * The password of the certificate.
@@ -28,11 +33,16 @@ class Certificate
      */
     private $type = 'PEM';
 
-    public function setPath(string $path): self
+    public function setCertificatePath(string $certificatePath): self
     {
-        $this->path = $path;
+        $this->certificatePath = $certificatePath;
 
-        $this->setTypeFromExtension(pathinfo($this->path, PATHINFO_EXTENSION));
+        return $this;
+    }
+
+    public function setKeyPath(string $keyPath): self
+    {
+        $this->keyPath = $keyPath;
 
         return $this;
     }
@@ -51,20 +61,14 @@ class Certificate
         return $this;
     }
 
-    protected function setTypeFromExtension(string $extension): void
+    public function getCertificatePath(): ?string
     {
-        $extension = strtoupper($extension);
-
-        if (!in_array($extension, ['PEM', 'P12'], true)) {
-            throw new InvalidArgumentException();
-        }
-
-        $this->setType($extension);
+        return $this->certificatePath;
     }
 
-    public function getPath(): string
+    public function getKeyPath(): ?string
     {
-        return $this->path;
+        return $this->keyPath;
     }
 
     public function getPassword(): ?string
@@ -72,22 +76,33 @@ class Certificate
         return $this->password;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * Get Guzzle certificate format.
-     *
-     * @return  array|string
-     */
-    public function toCert()
+    public function hasKeyPath(): bool
     {
-        if ($this->password !== null) {
-            return [$this->path, $this->password];
+        return $this->keyPath !== null;
+    }
+
+    /**
+     * Convert certificate options to CURL format.
+     *
+     * @return  array<int, string>
+     */
+    public function toCurlOptions()
+    {
+        $options = [
+            CURLOPT_SSLCERTTYPE   => $this->getType(),
+            CURLOPT_SSLCERT       => $this->getCertificatePath(),
+            CURLOPT_SSLCERTPASSWD => $this->getPassword(),
+        ];
+
+        if ($this->hasKeyPath()) {
+            $options[CURLOPT_SSLKEY] = $this->getKeyPath();
         }
 
-        return $this->path;
+        return array_filter($options);
     }
 }
