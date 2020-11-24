@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace NGT\NMVS\Parsers;
 
 use NGT\NMVS\Contracts\Parser as ParserContract;
+use NGT\NMVS\Contracts\Response as ResponseContract;
 use NGT\NMVS\Responses\SinglePackResponse;
 use NGT\NMVS\Support\XML;
 
 class SinglePackParser implements ParserContract
 {
-    public function parse(string $xml): SinglePackResponse
+    public function parse(string $xml): ResponseContract
     {
         $dom      = new XML($xml);
         $response = new SinglePackResponse($xml);
